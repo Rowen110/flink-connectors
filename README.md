@@ -52,7 +52,7 @@ Flink写入分布式表能完成功能逻辑，但在性能和可靠性上还是
 
 
 
-究竟某条数据过来sink 到哪个shard，我们定义了RowData 到ClickHouseShardExecutor 的分区接口，并实现了3种分区策略round-robin轮训 、random随机分区、field-hash基于字段的一致性哈希等策略，通过 sink.partition-column 参数指定分区字段，保证相同分区字段哈希到同shard内。整体架构如下图所示：
+究竟某条数据过来sink 到哪个shard，我们定义了RowData 到ClickHouseShardExecutor 的分区接口，并实现了3种分区策略round-robin轮询 、random随机分区、field-hash基于字段的一致性哈希等策略，通过 sink.partition-key 参数指定分区字段，保证相同分区字段哈希到同shard内。整体架构如下图所示：
 ![img.png](img.png)
 
 Flink数据写入的时序图可以参考如下所示:
