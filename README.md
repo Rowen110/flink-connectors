@@ -26,6 +26,7 @@ CREATE TABLE sink_table (
     'sink.partition-key' = 'name,grade' --hash 策略下的分区键
 );
 ```
+_参考_：*ClickHouse 在唯品会 OLAP 系统的实践* https://zhuanlan.zhihu.com/p/387910160
 
 Flink写入本地表
 
