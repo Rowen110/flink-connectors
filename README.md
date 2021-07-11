@@ -15,7 +15,7 @@ CREATE TABLE sink_table (
     'username' = '<username>',
     'password' = '<password>',
     'database-name' = 'default',        -- ClickHouse 数据库名，默认为 default 
-    'table-name' = 'seller_local',      -- ClickHouse 数据表名
+    'table-name' = '',                  -- ClickHouse 数据表名
     'table.collapsing.field' = 'Sign',  -- CollapsingMergeTree 类型列字段的名称
     'sink.batch-size' = '100000',       -- batch 大小
     'sink.flush-interval' = '30000',    -- flush 时间间隔
