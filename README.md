@@ -57,6 +57,6 @@ Flink写入分布式表能完成功能逻辑，但在性能和可靠性上还是
 
 Flink数据写入的时序图可以参考如下所示:
 
-![img_1.png](img_1.png)````
+![img_1.png](img_1.png)
 
 _参考_：*ClickHouse 在唯品会 OLAP 系统的实践* https://zhuanlan.zhihu.com/p/387910160
