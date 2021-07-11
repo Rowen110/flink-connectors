@@ -8,9 +8,10 @@ import java.sql.SQLException;
 import javax.annotation.Nonnull;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.util.Preconditions;
+import ru.yandex.clickhouse.ClickHouseConnection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.clickhouse.ClickHouseConnection;
 
 public class ClickHouseBatchOutputFormat extends AbstractClickHouseOutputFormat {
   private static final long serialVersionUID = 1L;
@@ -35,8 +36,8 @@ public class ClickHouseBatchOutputFormat extends AbstractClickHouseOutputFormat 
       this.connection = this.connectionProvider.getConnection();
       LOG.info("clickhouse open");
       this.executor.prepareStatement(this.connection);
-    } catch (Exception var4) {
-      throw new IOException("unable to establish connection with ClickHouse", var4);
+    } catch (Exception e) {
+      throw new IOException("unable to establish connection with ClickHouse", e);
     }
   }
 
@@ -67,8 +68,8 @@ public class ClickHouseBatchOutputFormat extends AbstractClickHouseOutputFormat 
       if (this.batchCount > 0) {
         try {
           this.flush();
-        } catch (Exception var2) {
-          LOG.warn("Writing records to ClickHouse failed.", var2);
+        } catch (Exception e) {
+          LOG.warn("Writing records to ClickHouse failed.", e);
         }
       }
 
@@ -82,8 +83,8 @@ public class ClickHouseBatchOutputFormat extends AbstractClickHouseOutputFormat 
       try {
         this.executor.closeStatement();
         this.connectionProvider.closeConnections();
-      } catch (SQLException var5) {
-        LOG.warn("ClickHouse connection could not be closed: {}", var5.getMessage());
+      } catch (SQLException e) {
+        LOG.warn("ClickHouse connection could not be closed: {}", e.getMessage());
       } finally {
         this.connection = null;
       }

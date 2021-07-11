@@ -107,13 +107,13 @@ public class ClickHouseBatchExecutor implements ClickHouseExecutor {
           ClickHouseBatchExecutor.this.batch.clear();
           break;
         } catch (SQLException e) {
-          ClickHouseBatchExecutor.LOG.error("ClickHouse executeBatch error, retry times = {}", Integer.valueOf(i), e);
+          ClickHouseBatchExecutor.LOG.error("ClickHouse executeBatch error, retry times = {}", i, e);
           if (i >= ClickHouseBatchExecutor.this.maxRetries) {
 
             throw new IOException(e);
           }
           try {
-            Thread.sleep((1000 * i));
+            Thread.sleep((1000L * i));
           } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IOException("unable to flush; interrupted while doing another attempt", e);

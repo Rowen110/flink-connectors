@@ -55,11 +55,12 @@ public class ClickHouseCollapsingExecutor implements ClickHouseExecutor {
       case DELETE:
       case UPDATE_BEFORE:
         return;
+      default:
+        throw new UnsupportedOperationException(
+            String.format(
+                "Unknown row kind, the supported row kinds is: INSERT, UPDATE_BEFORE, UPDATE_AFTER, DELETE, but get: %s.",
+                rowKind));
     }
-    throw new UnsupportedOperationException(
-        String.format(
-            "Unknown row kind, the supported row kinds is: INSERT, UPDATE_BEFORE, UPDATE_AFTER, DELETE, but get: %s.",
-            rowKind));
   }
 
   @Override
@@ -78,9 +79,9 @@ public class ClickHouseCollapsingExecutor implements ClickHouseExecutor {
     } else {
       LOG.warn("executor closed before initialized");
     }
-      if (this.stmt != null) {
-          this.stmt.close();
-      }
+    if (this.stmt != null) {
+      this.stmt.close();
+    }
   }
 
   @Override
@@ -123,7 +124,7 @@ public class ClickHouseCollapsingExecutor implements ClickHouseExecutor {
             throw new IOException(e);
           }
           try {
-            Thread.sleep((1000 * i));
+            Thread.sleep((1000L * i));
           } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IOException("unable to flush; interrupted while doing another attempt", e);

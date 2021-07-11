@@ -2,6 +2,7 @@ package com.asinking.connector.clickhouse.table.internal.executor;
 
 import com.asinking.connector.clickhouse.table.internal.converter.ClickHouseRowConverter;
 import com.asinking.connector.clickhouse.table.internal.options.ClickHouseOptions;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;

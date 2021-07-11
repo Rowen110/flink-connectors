@@ -17,7 +17,7 @@ public class HashPartitioner implements ClickHousePartitioner {
 
     @Override
     public int select(RowData record, int numShards) {
-        List<Object> key = new ArrayList();
+        List<Object> key = new ArrayList<>();
         for (RowData.FieldGetter getter : this.getterList) {
             key.add(getter.getFieldOrNull(record));
         }

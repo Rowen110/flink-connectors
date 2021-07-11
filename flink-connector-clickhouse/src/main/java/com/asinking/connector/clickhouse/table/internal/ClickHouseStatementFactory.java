@@ -28,7 +28,8 @@ public class ClickHouseStatementFactory {
     List<String> conditionList = Arrays.asList(conditionFields);
     String setClause = Arrays.stream(fieldNames).filter((fieldName) -> !conditionList.contains(fieldName)).map((f) ->
         quoteIdentifier(f) + "=?").collect(Collectors.joining(", "));
-    String conditionClause = Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
+    String conditionClause =
+        Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
     String onClusterClause = "";
     if (clusterName.isPresent()) {
       onClusterClause = " ON CLUSTER " + quoteIdentifier(clusterName.get());
@@ -39,7 +40,8 @@ public class ClickHouseStatementFactory {
   }
 
   public static String getDeleteStatement(String tableName, String[] conditionFields, Optional<String> clusterName) {
-    String conditionClause = Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
+    String conditionClause =
+        Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
     String onClusterClause = "";
     if (clusterName.isPresent()) {
       onClusterClause = " ON CLUSTER " + quoteIdentifier(clusterName.get());
@@ -49,7 +51,8 @@ public class ClickHouseStatementFactory {
   }
 
   public static String getRowExistsStatement(String tableName, String[] conditionFields) {
-    String fieldExpressions = Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
+    String fieldExpressions =
+        Arrays.stream(conditionFields).map((f) -> quoteIdentifier(f) + "=?").collect(Collectors.joining(" AND "));
     return "SELECT 1 FROM " + quoteIdentifier(tableName) + " WHERE " + fieldExpressions;
   }
 

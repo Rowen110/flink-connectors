@@ -1,5 +1,11 @@
 package com.asinking.connector.clickhouse.table;
 
+import com.asinking.connector.clickhouse.table.internal.options.ClickHouseOptions;
+import com.asinking.connector.clickhouse.table.internal.partitioner.ClickHousePartitioner;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.ReadableConfig;
@@ -9,15 +15,8 @@ import org.apache.flink.table.factories.DynamicTableSinkFactory;
 import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.utils.TableSchemaUtils;
 
-import com.asinking.connector.clickhouse.table.internal.options.ClickHouseOptions;
-import com.asinking.connector.clickhouse.table.internal.partitioner.ClickHousePartitioner;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class ClickHouseDynamicTableFactory implements DynamicTableSinkFactory {
+
   public static final String IDENTIFIER = "clickhouse";
   public static final ConfigOption<String> URL = ConfigOptions
       .key("url")
@@ -110,6 +109,7 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSinkFactory {
       .booleanType()
       .defaultValue(false)
       .withDescription("whether to treat update statements as insert statements and ignore deletes. defaults to true.");
+
   @Override
   public DynamicTableSink createDynamicTableSink(Context context) {
     FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
@@ -135,7 +135,7 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSinkFactory {
 
   @Override
   public Set<ConfigOption<?>> optionalOptions() {
-    Set<ConfigOption<?>> optionalOptions = new HashSet();
+    Set<ConfigOption<?>> optionalOptions = new HashSet<>();
     optionalOptions.add(USERNAME);
     optionalOptions.add(PASSWORD);
     optionalOptions.add(CLUSTER_NAME);

@@ -6,23 +6,23 @@ import java.util.List;
 import org.apache.flink.table.data.RowData;
 
 public interface ClickHousePartitioner extends Serializable {
-    public static final String BALANCED = "balanced";
+  String BALANCED = "balanced";
 
-    public static final String SHUFFLE = "shuffle";
+  String SHUFFLE = "shuffle";
 
-    public static final String HASH = "hash";
+  String HASH = "hash";
 
-    int select(RowData paramRowData, int paramInt);
+  static ClickHousePartitioner createBalanced() {
+    return new BalancedPartitioner();
+  }
 
-    static ClickHousePartitioner createBalanced() {
-        return new BalancedPartitioner();
-    }
+  static ClickHousePartitioner createShuffle() {
+    return new ShufflePartitioner();
+  }
 
-    static ClickHousePartitioner createShuffle() {
-        return new ShufflePartitioner();
-    }
+  static ClickHousePartitioner createHash(List<RowData.FieldGetter> getter) {
+    return new HashPartitioner(getter);
+  }
 
-    static ClickHousePartitioner createHash(List<RowData.FieldGetter> getter) {
-        return new HashPartitioner(getter);
-    }
+  int select(RowData paramRowData, int paramInt);
 }

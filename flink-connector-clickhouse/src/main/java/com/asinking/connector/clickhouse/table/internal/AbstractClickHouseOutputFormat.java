@@ -71,7 +71,7 @@ public abstract class AbstractClickHouseOutputFormat extends RichOutputFormat<Ro
       Preconditions.checkNotNull(this.fieldNames);
       Preconditions.checkNotNull(this.fieldDataTypes);
       LogicalType[] logicalTypes =
-          Arrays.stream(this.fieldDataTypes).map(DataType::getLogicalType).toArray(x$0 -> new LogicalType[x$0]);
+          Arrays.stream(this.fieldDataTypes).map(DataType::getLogicalType).toArray(LogicalType[]::new);
       ClickHouseRowConverter converter = new ClickHouseRowConverter(RowType.of(logicalTypes),
           (this.hasPrimaryKey && this.options.getTableCollapsingField().isPresent()));
       LOG.info("ClickHouseOptions: {}", this.options);

@@ -30,8 +30,6 @@ public class ClickHouseRowConverter implements Serializable {
 
   private final RowType rowType;
 
-  private final LogicalType[] fieldTypes;
-
   private final DeserializationConverter[] toFlinkConverters;
 
   private final SerializationConverter[] toClickHouseConverters;
@@ -40,13 +38,13 @@ public class ClickHouseRowConverter implements Serializable {
 
   public ClickHouseRowConverter(RowType rowType, boolean collapsing) {
     this.rowType = Preconditions.checkNotNull(rowType);
-    this.fieldTypes = rowType.getFields().stream().map(RowType.RowField::getType)
-        .toArray(type -> new LogicalType[type]);
+    LogicalType[] fieldTypes = rowType.getFields().stream().map(RowType.RowField::getType)
+        .toArray(LogicalType[]::new);
     toFlinkConverters = new DeserializationConverter[rowType.getFieldCount()];
     toClickHouseConverters = new SerializationConverter[rowType.getFieldCount()];
     for (int i = 0; i < rowType.getFieldCount(); i++) {
       toFlinkConverters[i] = createToFlinkConverter(rowType.getTypeAt(i));
-      toClickHouseConverters[i] = createNullableToClickHouseConverter(this.fieldTypes[i]);
+      toClickHouseConverters[i] = createNullableToClickHouseConverter(fieldTypes[i]);
     }
     this.collapsing = collapsing;
   }
@@ -65,7 +63,6 @@ public class ClickHouseRowConverter implements Serializable {
     for (int index = 0; index < rowData.getArity(); ++index) {
       toClickHouseConverters[index].serialize(rowData, index, statement);
     }
-
     if (this.collapsing) {
       switch (rowData.getRowKind()) {
         case INSERT:
@@ -75,9 +72,9 @@ public class ClickHouseRowConverter implements Serializable {
         case UPDATE_BEFORE:
         case DELETE:
           statement.setInt(rowData.getArity() + 1, -1);
+          break;
       }
     }
-
     return statement;
   }
 
@@ -120,8 +117,10 @@ public class ClickHouseRowConverter implements Serializable {
       case BINARY:
       case VARBINARY:
         return val -> val;
+      default:
+        throw new UnsupportedOperationException("Unsupported type:" + type);
     }
-    throw new UnsupportedOperationException("Unsupported type:" + type);
+
   }
 
   protected SerializationConverter createNullableToClickHouseConverter(LogicalType type) {
@@ -184,8 +183,9 @@ public class ClickHouseRowConverter implements Serializable {
         decimalScale = ((DecimalType) type).getScale();
         return (val, index, statement) -> statement
             .setBigDecimal(index + 1, val.getDecimal(index, decimalPrecision, decimalScale).toBigDecimal());
+      default:
+        throw new UnsupportedOperationException("Unsupported type:" + type);
     }
-    throw new UnsupportedOperationException("Unsupported type:" + type);
   }
 
   @FunctionalInterface

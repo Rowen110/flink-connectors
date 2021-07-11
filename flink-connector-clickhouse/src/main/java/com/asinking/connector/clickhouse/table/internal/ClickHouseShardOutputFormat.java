@@ -7,7 +7,6 @@ import com.asinking.connector.clickhouse.table.internal.partitioner.ClickHousePa
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.flink.table.data.RowData;
@@ -35,7 +34,7 @@ public class ClickHouseShardOutputFormat extends AbstractClickHouseOutputFormat 
     this.partitioner = Preconditions.checkNotNull(partitioner);
     this.executorFactory = executorFactory;
     this.options = Preconditions.checkNotNull(options);
-    this.shardExecutors = new ArrayList();
+    this.shardExecutors = new ArrayList<>();
   }
 
   @Override
@@ -60,10 +59,8 @@ public class ClickHouseShardOutputFormat extends AbstractClickHouseOutputFormat 
 
   private void initializeExecutors() throws SQLException {
     LOG.info("shardConnections size {}, begin to create executor", this.shardConnections.size());
-    Iterator iterator = this.shardConnections.iterator();
 
-    while (iterator.hasNext()) {
-      ClickHouseConnection shardConnection = (ClickHouseConnection) iterator.next();
+    for (ClickHouseConnection shardConnection : this.shardConnections) {
       ClickHouseExecutor clickHouseExecutor = this.executorFactory.get();
       clickHouseExecutor.prepareStatement(shardConnection);
       LOG.info("add executor {}", clickHouseExecutor);
@@ -88,7 +85,6 @@ public class ClickHouseShardOutputFormat extends AbstractClickHouseOutputFormat 
     for (int i = 0; i < this.shardExecutors.size(); ++i) {
       this.flush(i);
     }
-
   }
 
   public void flush(int index) throws IOException {
@@ -100,13 +96,11 @@ public class ClickHouseShardOutputFormat extends AbstractClickHouseOutputFormat 
   public void close() throws IOException {
     if (!this.closed) {
       this.closed = true;
-
       try {
         this.flush();
-      } catch (Exception var2) {
-        LOG.warn("Writing records to ClickHouse failed.", var2);
+      } catch (Exception e) {
+        LOG.warn("Writing records to ClickHouse failed.", e);
       }
-
       this.closeConnection();
     }
 
@@ -114,16 +108,13 @@ public class ClickHouseShardOutputFormat extends AbstractClickHouseOutputFormat 
 
   private void closeConnection() {
     try {
-      Iterator iterator = this.shardExecutors.iterator();
 
-      while (iterator.hasNext()) {
-        ClickHouseExecutor shardExecutor = (ClickHouseExecutor) iterator.next();
+      for (ClickHouseExecutor shardExecutor : this.shardExecutors) {
         shardExecutor.closeStatement();
       }
-
       this.connectionProvider.closeConnections();
-    } catch (SQLException var6) {
-      LOG.warn("ClickHouse connection could not be closed: {}", var6.getMessage());
+    } catch (SQLException e) {
+      LOG.warn("ClickHouse connection could not be closed: {}", e.getMessage());
     } finally {
       this.connection = null;
     }

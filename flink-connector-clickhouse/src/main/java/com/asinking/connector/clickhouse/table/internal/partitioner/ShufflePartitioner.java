@@ -1,7 +1,8 @@
 package com.asinking.connector.clickhouse.table.internal.partitioner;
 
-import java.util.concurrent.ThreadLocalRandom;
 import org.apache.flink.table.data.RowData;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ShufflePartitioner implements ClickHousePartitioner {
     private static final long serialVersionUID = 1L;
