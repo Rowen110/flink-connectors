@@ -21,8 +21,8 @@ CREATE TABLE sink_table (
     'sink.flush-interval' = '30000',    -- flush 时间间隔
     'sink.max-retries' = '3',           -- 最大重试次数
     'sink.partition-strategy' = 'hash', --hash | random | balanced
-    -- 'sink.write-local' = 'true',        -- 开启本地表写入（如果 SELECT shard_num, host_address, port FROM system.clusters到的节点无外网地址，可 ClickHouseConnectionProvider#getLocalNodes 查看具体）
-    -- 'sink.write-local-nodes' = 'xxx:8123,xxx:8123,...', -- 分片节点
+    -- 'sink.write-local' = 'true',     -- 开启本地表写入
+    -- 'sink.write-local-nodes' = 'xxx:8123,xxx:8123,...', -- 本地表节点
     'sink.partition-key' = 'name,grade' --hash 策略下的分区键
 );
 ```
@@ -39,7 +39,7 @@ Flink写入分布式表能完成功能逻辑，但在性能和可靠性上还是
 
 
 
-- 根据库名和表名查system.tables获取表的engine信息(SELECT engine_full FROM system.tables WHERE database = ? AND name = ? )
+- 根据库名和表名查system.tables获取表的engine信息(SELECT engine_full FROM system.tables WHERE database = ? AND name = ? )，`ClickHouseConnectionProvider#getLocalNodes` 查看详情
 
 - 解析engine信息，获取集群名、本地表名；
 
