@@ -21,12 +21,11 @@ CREATE TABLE sink_table (
     'sink.flush-interval' = '30000',    -- flush 时间间隔
     'sink.max-retries' = '3',           -- 最大重试次数
     'sink.partition-strategy' = 'hash', --hash | random | balanced
-    'sink.write-local' = 'true',        -- 开启本地表写入
-    'sink.write-local-nodes' = 'xxx:8123,xxx:8123,...', -- 分片节点
+    -- 'sink.write-local' = 'true',        -- 开启本地表写入（如果 SELECT shard_num, host_address, port FROM system.clusters到的节点无外网地址，可 ClickHouseConnectionProvider#getLocalNodes 查看具体）
+    -- 'sink.write-local-nodes' = 'xxx:8123,xxx:8123,...', -- 分片节点
     'sink.partition-key' = 'name,grade' --hash 策略下的分区键
 );
 ```
-
 
 ### Flink写入本地表
 
@@ -53,10 +52,10 @@ Flink写入分布式表能完成功能逻辑，但在性能和可靠性上还是
 
 
 究竟某条数据过来sink 到哪个shard，我们定义了RowData 到ClickHouseShardExecutor 的分区接口，并实现了3种分区策略round-robin轮询 、random随机分区、field-hash基于字段的一致性哈希等策略，通过 sink.partition-key 参数指定分区字段，保证相同分区字段哈希到同shard内。整体架构如下图所示：
-![img.png](img.png)
+![img.png](image/img.png)
 
 Flink数据写入的时序图可以参考如下所示:
 
-![img_1.png](img_1.png)
+![img_1.png](image/img_1.png)
 
 _参考_：*ClickHouse 在唯品会 OLAP 系统的实践* https://zhuanlan.zhihu.com/p/387910160
