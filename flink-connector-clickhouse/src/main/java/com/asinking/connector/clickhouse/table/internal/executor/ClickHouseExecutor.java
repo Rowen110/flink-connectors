@@ -25,8 +25,16 @@ public interface ClickHouseExecutor extends Serializable {
                                                                ClickHouseRowConverter converter,
                                                                ClickHouseOptions options) {
     String sql =
-        ClickHouseStatementFactory.getCollapsingInsert(tableName, options.getTableCollapsingField(), fieldNames);
+        ClickHouseStatementFactory.getCollapsingInsert(tableName, fieldNames, options.getTableCollapsingField());
     return new ClickHouseCollapsingExecutor(sql, converter, options);
+  }
+
+  static ClickHouseReplacingExecutor createReplacingExecutor(String tableName, String[] fieldNames,
+                                                             ClickHouseRowConverter converter,
+                                                             ClickHouseOptions options) {
+    String sql =
+        ClickHouseStatementFactory.getReplacingInsert(tableName, fieldNames, options.getTableReplacingField());
+    return new ClickHouseReplacingExecutor(sql, converter, options);
   }
 
   static ClickHouseBatchExecutor createBatchExecutor(String tableName, String[] fieldNames,

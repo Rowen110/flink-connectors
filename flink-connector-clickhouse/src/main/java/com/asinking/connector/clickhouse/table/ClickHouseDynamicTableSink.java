@@ -7,6 +7,7 @@ import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.connector.sink.OutputFormatProvider;
+import org.apache.flink.table.connector.sink.SinkFunctionProvider;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Preconditions;
 
@@ -22,8 +23,12 @@ public class ClickHouseDynamicTableSink implements DynamicTableSink {
   @Override
   public ChangelogMode getChangelogMode(ChangelogMode requestedMode) {
     this.validatePrimaryKey(requestedMode);
-    return ChangelogMode.newBuilder().addContainedKind(RowKind.INSERT).addContainedKind(RowKind.UPDATE_BEFORE)
-        .addContainedKind(RowKind.UPDATE_AFTER).addContainedKind(RowKind.DELETE).build();
+    return ChangelogMode.newBuilder()
+        .addContainedKind(RowKind.INSERT)
+        .addContainedKind(RowKind.UPDATE_BEFORE)
+        .addContainedKind(RowKind.UPDATE_AFTER)
+        .addContainedKind(RowKind.DELETE)
+        .build();
   }
 
   private void validatePrimaryKey(ChangelogMode requestedMode) {
@@ -35,9 +40,13 @@ public class ClickHouseDynamicTableSink implements DynamicTableSink {
   @Override
   public SinkRuntimeProvider getSinkRuntimeProvider(Context context) {
     AbstractClickHouseOutputFormat outputFormat =
-        (new AbstractClickHouseOutputFormat.Builder()).withOptions(this.options)
-            .withFieldNames(this.tableSchema.getFieldNames()).withFieldDataTypes(this.tableSchema.getFieldDataTypes())
-            .withPrimaryKey(this.tableSchema.getPrimaryKey()).build();
+        new AbstractClickHouseOutputFormat.Builder()
+            .withOptions(this.options)
+            .withFieldNames(this.tableSchema.getFieldNames())
+            .withFieldDataTypes(this.tableSchema.getFieldDataTypes())
+            .withPrimaryKey(this.tableSchema.getPrimaryKey())
+            .build();
+
     return OutputFormatProvider.of(outputFormat);
   }
 

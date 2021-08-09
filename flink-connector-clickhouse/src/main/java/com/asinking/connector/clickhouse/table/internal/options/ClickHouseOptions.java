@@ -27,6 +27,9 @@ public class ClickHouseOptions implements Serializable {
   @Nullable
   private final String tableCollapsingField;
 
+  @Nullable
+  private final String tableReplacingField;
+
   private final int batchSize;
 
   private final Duration flushInterval;
@@ -43,8 +46,10 @@ public class ClickHouseOptions implements Serializable {
 
   private final boolean ignoreDelete;
 
-  private ClickHouseOptions(String url, String username, String password, String clusterName, String databaseName,
-                            String tableName, String tableCollapsingField, int batchSize, Duration flushInterval,
+  private ClickHouseOptions(String url, String username, String password, String clusterName,
+                            String databaseName,
+                            String tableName, String tableCollapsingField, String tableReplacingField,
+                            int batchSize, Duration flushInterval,
                             int maxRetires, boolean writeLocal, String writeLocalNodes, String partitionStrategy,
                             String partitionKey, boolean ignoreDelete) {
     this.url = url;
@@ -54,6 +59,7 @@ public class ClickHouseOptions implements Serializable {
     this.databaseName = databaseName;
     this.tableName = tableName;
     this.tableCollapsingField = tableCollapsingField;
+    this.tableReplacingField = tableReplacingField;
     this.batchSize = batchSize;
     this.flushInterval = flushInterval;
     this.maxRetries = maxRetires;
@@ -90,6 +96,10 @@ public class ClickHouseOptions implements Serializable {
 
   public Optional<String> getTableCollapsingField() {
     return Optional.ofNullable(this.tableCollapsingField);
+  }
+
+  public Optional<String> getTableReplacingField() {
+    return Optional.ofNullable(this.tableReplacingField);
   }
 
   public int getBatchSize() {
@@ -182,6 +192,8 @@ public class ClickHouseOptions implements Serializable {
 
     private String tableCollapsingField;
 
+    private String tableReplacingField;
+
     private int batchSize;
 
     private Duration flushInterval;
@@ -233,6 +245,11 @@ public class ClickHouseOptions implements Serializable {
       return this;
     }
 
+    public Builder withTableReplacingField(String tableReplacingField) {
+      this.tableReplacingField = tableReplacingField;
+      return this;
+    }
+
     public Builder withBatchSize(int batchSize) {
       this.batchSize = batchSize;
       return this;
@@ -275,7 +292,8 @@ public class ClickHouseOptions implements Serializable {
 
     public ClickHouseOptions build() {
       return new ClickHouseOptions(this.url, this.username, this.password, this.clusterName, this.databaseName,
-          this.tableName, this.tableCollapsingField, this.batchSize, this.flushInterval, this.maxRetries,
+          this.tableName, this.tableCollapsingField, this.tableReplacingField, this.batchSize, this.flushInterval,
+          this.maxRetries,
           this.writeLocal, this.writeLocalNodes, this.partitionStrategy, this.partitionKey, this.ignoreDelete);
     }
   }
