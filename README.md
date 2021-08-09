@@ -16,7 +16,8 @@ CREATE TABLE sink_table (
     'password' = '<password>',
     'database-name' = 'default',        -- ClickHouse 数据库名，默认为 default 
     'table-name' = '',                  -- ClickHouse 数据表名
-    'table.collapsing.field' = 'Sign',  -- CollapsingMergeTree 类型列字段的名称
+    -- 'table.collapsing.field' = 'Sign',   -- CollapsingMergeTree Sign标记列，需要成对的Sign 1/-1出现，flink任务不能重启
+    -- 'table.collapsing.field' = 'deleted' -- ReplacingMergeTree  删除标记列， 可以实现最终幂等写入，可搭配offset作为ver字段实现EOS
     'sink.batch-size' = '100000',       -- batch 大小
     'sink.flush-interval' = '30000',    -- flush 时间间隔
     'sink.max-retries' = '3',           -- 最大重试次数
